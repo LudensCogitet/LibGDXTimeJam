@@ -215,8 +215,16 @@ public class TimeJam extends ApplicationAdapter {
 		this.ui.draw();
 
 		if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-			this.currentLevel = 0;
+			if(Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT)) {
+				this.currentLevel = 0;
+			}
 			this.loadLevel(this.currentLevel);
+		} else if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_3)) {
+			Gdx.graphics.setWindowedMode(768, 768);
+		} else if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
+			Gdx.graphics.setWindowedMode(512, 512);
+		} else if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
+			Gdx.graphics.setWindowedMode(256, 256);
 		}
 	}
 	
@@ -257,6 +265,8 @@ public class TimeJam extends ApplicationAdapter {
 					this.playerStartX = x;
 					this.playerStartY = y;
 					this.players.add(new Player(this, x, y, true));
+				} else if(level[arrayY][x] == Entity.TYPE.ROBOT.INDEX) {
+					this.addActorEntity(new Robot(this, x, y));
 				}
 			}
 		}
@@ -320,11 +330,7 @@ public class TimeJam extends ApplicationAdapter {
 		}
 
 		if(player.isActive()) {
-			if(!this.halt) {
-				this.step();
-			} else {
-				this.halt = false;
-			}
+			this.step();
 		}
 	}
 
@@ -431,11 +437,11 @@ public class TimeJam extends ApplicationAdapter {
 		Player currentPlayer = null;
 
 		for(int i = 0; i < this.players.size; i++) {
-			if(chosenPlayer == null) {
-				chosenPlayer = this.players.get(i);
-			} else {
-				currentPlayer = this.players.get(i);
-				if(currentPlayer.getPosition().dst(origin) < chosenPlayer.getPosition().dst(origin)) {
+			currentPlayer = this.players.get(i);
+			if (!currentPlayer.isGone()) {
+				if (chosenPlayer == null) {
+					chosenPlayer = currentPlayer;
+				} else if (currentPlayer.getPosition().dst(origin) < chosenPlayer.getPosition().dst(origin)) {
 					chosenPlayer = currentPlayer;
 				}
 			}

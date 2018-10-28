@@ -78,7 +78,7 @@ public class Player extends Entity {
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
                 newX++;
                 this.moveList.add(Input.Keys.RIGHT);
-            } else if (Gdx.input.isKeyJustPressed(Input.Keys.SHIFT_RIGHT)) {
+            } else if (Gdx.input.isKeyJustPressed(Input.Keys.SHIFT_RIGHT) || Gdx.input.isKeyJustPressed(Input.Keys.SHIFT_LEFT)) {
                 moved = true;
                 this.moveList.add(Input.Keys.SHIFT_RIGHT);
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && !this.gone) {

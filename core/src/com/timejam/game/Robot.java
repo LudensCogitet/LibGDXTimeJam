@@ -20,17 +20,18 @@ public class Robot extends Entity {
 
     @Override
     public void act() {
+        if(this.target != null && this.target.isGone()) {
+            this.target = null;
+            return;
+        }
+
         if(this.target == null) {
             Player potentialTarget = this.gameRef.findNearestPlayer(this.x, this.y);
             if(potentialTarget.getPosition().dst(new Vector2(this.x, this.y)) < visionRadius) {
                 this.target = potentialTarget;
+            } else {
+                return;
             }
-            return;
-        }
-
-        if(this.target.isGone()) {
-            this.target = null;
-            return;
         }
 
         int newX = this.x;
@@ -53,7 +54,7 @@ public class Robot extends Entity {
             this.x = newX;
             this.y = newY;
 
-            if(this.target.x == this.x && this.target.y == this.y) {
+            if(this.target.x == this.x && this.target.y == this.y && !this.target.isGone()) {
                 this.gameRef.lose();
             }
         }
