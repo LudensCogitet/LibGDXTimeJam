@@ -65,24 +65,26 @@ public class Player extends Entity {
             int newX = this.x;
             int newY = this.y;
             boolean moved = false;
+            int input = -1;
 
             if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
                 newY++;
-                this.moveList.add(Input.Keys.UP);
+                input = Input.Keys.UP;
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
                 newY--;
-                this.moveList.add(Input.Keys.DOWN);
+                input = Input.Keys.DOWN;
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
                 newX--;
-                this.moveList.add(Input.Keys.LEFT);
+                input = Input.Keys.LEFT;
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
                 newX++;
-                this.moveList.add(Input.Keys.RIGHT);
+                input = Input.Keys.RIGHT;
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.SHIFT_RIGHT) || Gdx.input.isKeyJustPressed(Input.Keys.SHIFT_LEFT)) {
                 moved = true;
-                this.moveList.add(Input.Keys.SHIFT_RIGHT);
+                input = Input.Keys.SHIFT_RIGHT;
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && !this.gone) {
-                this.moveList.add(Input.Keys.SPACE);
+                moved = true;
+                input = Input.Keys.SPACE;
                 this.gameRef.timeWarp();
 
                 newX = this.initialX;
@@ -91,6 +93,7 @@ public class Player extends Entity {
 
             if (newX != this.x || newY != this.y || moved) {
                 if (this.gameRef.canMove(newX, newY)) {
+                    this.moveList.add(input);
                     this.previousX = this.x;
                     this.previousY = this.y;
 
