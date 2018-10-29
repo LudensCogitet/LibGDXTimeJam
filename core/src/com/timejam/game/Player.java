@@ -87,8 +87,13 @@ public class Player extends Entity {
                 input = Input.Keys.SPACE;
                 this.gameRef.timeWarp();
 
-                newX = this.initialX;
-                newY = this.initialY;
+                this.previousY = this.y;
+                this.previousX = this.x;
+
+                this.x = this.initialX;
+                this.y = this.initialY;
+                this.announceMovement();
+                return;
             }
 
             if (newX != this.x || newY != this.y || moved) {
@@ -100,7 +105,8 @@ public class Player extends Entity {
                     this.x = newX;
                     this.y = newY;
 
-                    this.gameRef.movePlayer(this);
+                    this.announceMovement();
+                    this.gameRef.movePlayer();
                 }
             }
         }
@@ -132,7 +138,6 @@ public class Player extends Entity {
 
             newX = this.initialX;
             newY = this.initialY;
-            this.gameRef.movePlayer(this);
         }
 
         if (newX != this.x || newY != this.y || moved) {
@@ -142,7 +147,7 @@ public class Player extends Entity {
 
                 this.x = newX;
                 this.y = newY;
-                this.gameRef.movePlayer(this);
+                this.announceMovement();
             }
         }
     }
@@ -154,6 +159,9 @@ public class Player extends Entity {
             this.active = false;
         }
 
+        if(this.moveList.size == 0 || this.moveList.peek() != Input.Keys.SPACE)
+            this.moveList.add(Input.Keys.SPACE);
+
         this.gone = false;
         this.moveIndex = 0;
         this.time = 0;
@@ -162,5 +170,31 @@ public class Player extends Entity {
         this.y = this.initialY;
         this.previousX = this.x;
         this.previousY = this.y;
+    }
+
+    private void announceMovement() {
+        Entity levelEntityNext = this.gameRef.getLevelEntityAt(this.x, this.y);
+
+        Entity levelEntityPrevious = this.gameRef.getLevelEntityAt(this.previousX, this.previousY);
+
+        Entity actorEntityNext = this.gameRef.getActorEntityAt(this.x, this.y);
+
+        Entity actorEntityPrevious = this.gameRef.getActorEntityAt(this.previousX, this.previousY);
+
+        if(levelEntityNext != null) {
+            levelEntityNext.react(this, Entity.VERB.ENTERING);
+        }
+
+        if(actorEntityNext != null) {
+            actorEntityNext.react(this, Entity.VERB.ENTERING);
+        }
+
+        if (actorEntityPrevious != null) {
+            actorEntityPrevious.react(this, Entity.VERB.EXITING);
+        }
+
+        if (levelEntityPrevious != null) {
+            levelEntityPrevious.react(this, Entity.VERB.EXITING);
+        }
     }
 }

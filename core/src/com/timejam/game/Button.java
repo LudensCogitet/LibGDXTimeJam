@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Button extends Entity {
     private Entity target;
-    private boolean pressed = false;
+    private int pressed = 0;
 
     Button(TimeJam gameRef, int x, int y, Entity target) {
         super(TYPE.BUTTON, x, y, gameRef.getGraphics(TimeJam.SPRITE_INFO.BUTTON), 1, false);
@@ -18,19 +18,22 @@ public class Button extends Entity {
 
     @Override
     public TextureRegion getSprite() {
-        return this.sprite.getKeyFrame(this.pressed ? 1 : 0);
+        return this.sprite.getKeyFrame(this.pressed > 0 ? 1 : 0);
     }
 
     @Override
     public void react(Entity entity, VERB verb) {
         switch(verb) {
             case ENTERING:
-                this.pressed = true;
+                this.pressed++;
                 this.target.react(this, VERB.ENTERING);
                 break;
             case EXITING:
-                this.pressed = false;
-                this.target.react(this, VERB.EXITING);
+                this.pressed--;
+                if(this.pressed < 0) this.pressed = 0;
+                if(this.pressed <= 0) {
+                    this.target.react(this, VERB.EXITING);
+                }
                 break;
         }
     }

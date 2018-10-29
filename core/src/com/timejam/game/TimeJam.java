@@ -314,41 +314,24 @@ public class TimeJam extends ApplicationAdapter {
 		return canMove;
 	}
 
-	public void movePlayer(Player player) {
-		Entity levelEntityNext = this.level.get(player.getY()).get(player.getX());
-		Entity actorEntityNext = this.actors.get(player.getY()).get(player.getX());
-		Entity levelEntityPrevious = this.level.get(player.getPreviousY()).get(player.getPreviousX());
-		Entity actorEntityPrevious = this.actors.get(player.getPreviousY()).get(player.getPreviousX());
-
-
-		if(levelEntityNext != null) {
-			levelEntityNext.react(player, Entity.VERB.ENTERING);
+	public void movePlayer() {
+		for(int i = 0; i < this.players.size; i++) {
+			Player player = this.players.get(i);
+			player.act();
 		}
 
-		if(actorEntityNext != null) {
-			actorEntityNext.react(player, Entity.VERB.ENTERING);
-		}
-
-		if(player.getX() != player.getPreviousX() || player.getY() != player.getPreviousY()) {
-			if (actorEntityPrevious != null) {
-				actorEntityPrevious.react(player, Entity.VERB.EXITING);
-			}
-
-			if (levelEntityPrevious != null) {
-				levelEntityPrevious.react(player, Entity.VERB.EXITING);
-			}
-		}
-
-		if(player.isActive()) {
-			this.step();
-		}
+		this.step();
 	}
 
 	private void step() {
 		this.setMoves(this.moves + 1);
-		for(Player p : this.players) {
-			if(!p.isActive()) {
-				p.act();
+
+		for(Array<Entity> row: this.level) {
+			for(int i = 0; i < row.size; i++) {
+				Entity e = row.get(i);
+				if(e != null) {
+					e.act();
+				}
 			}
 		}
 
@@ -375,8 +358,16 @@ public class TimeJam extends ApplicationAdapter {
 		this.level.get(entity.getY()).set(entity.getX(), entity);
 	}
 
+	public Entity getLevelEntityAt(int x, int y) {
+		return this.level.get(y).get(x);
+	}
+
 	public void addActorEntity(Entity entity) {
 		this.actors.get(entity.getY()).set(entity.getX(), entity);
+	}
+
+	public Entity getActorEntityAt(int x, int y) {
+		return this.actors.get(y).get(x);
 	}
 
 	public void removeActorEntity(Entity actor) {

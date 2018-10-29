@@ -33,13 +33,17 @@ public class Door extends Entity {
                 break;
             case EXITING:
                 this.solid = true;
-
-                Player player = this.gameRef.findPlayerAt(this.x, this.y);
-                if(player != null) {
-                    this.gameRef.lose();
-                }
-
                 break;
+        }
+    }
+
+    @Override
+    public void act() {
+        if(this.solid) {
+            Player player = this.gameRef.findPlayerAt(this.x, this.y);
+            if(player != null) {
+                this.gameRef.lose();
+            }
         }
     }
 }
