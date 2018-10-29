@@ -21,6 +21,7 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 public class TimeJam extends ApplicationAdapter {
 	private SpriteBatch batch;
 	private Texture texture;
+	private Texture grid;
 	private BitmapFont largeFont;
 	private Stage ui;
 
@@ -48,6 +49,7 @@ public class TimeJam extends ApplicationAdapter {
 	private int playerStartY;
 
 	private float flashTime = 0f;
+	private boolean showGrid = false;
 
 	private boolean halt = false;
 
@@ -91,6 +93,7 @@ public class TimeJam extends ApplicationAdapter {
 	public void create () {
 		this.batch = new SpriteBatch();
 		this.texture = new Texture("spriteSheet.png");
+		this.grid = new Texture("grid.png");
 		this.generateGraphics();
 
 		this.ui = new Stage(this.viewport);
@@ -164,6 +167,10 @@ public class TimeJam extends ApplicationAdapter {
 			this.batch.begin();
 			this.batch.setProjectionMatrix(this.viewport.getCamera().combined);
 
+			if(this.showGrid) {
+				this.batch.draw(this.grid, 0, 0);
+			}
+			
 			for (int y = this.level.size - 1, arrayY = 0; y >= 0; y--, arrayY++) {
 				Array<Entity> row = this.level.get(y);
 				for (int x = 0; x < row.size; x++) {
@@ -225,6 +232,8 @@ public class TimeJam extends ApplicationAdapter {
 			Gdx.graphics.setWindowedMode(512, 512);
 		} else if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
 			Gdx.graphics.setWindowedMode(256, 256);
+		} else if(Gdx.input.isKeyJustPressed(Input.Keys.TAB)) {
+			this.showGrid = !this.showGrid;
 		}
 	}
 	
@@ -232,6 +241,7 @@ public class TimeJam extends ApplicationAdapter {
 	public void dispose () {
 		this.batch.dispose();
 		this.texture.dispose();
+		this.grid.dispose();
 		this.largeFont.dispose();
 	}
 
